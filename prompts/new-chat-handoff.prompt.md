@@ -5,7 +5,7 @@
 ```text
 当前项目为 <project-name>，仓库为 <owner>/<repo>，当前 source-of-truth 分支为 <branch>，当前版本为 <version>。
 
-每次需求设计、代码修改、UI 调整、PR 验收前，必须先读取仓库根目录 AGENTS.md，并按其中检查项执行；若无法读取，必须先要求用户提供 AGENTS.md 内容，不得直接设计或改代码。
+每次需求设计、代码修改、UI 调整、PR 验收前，必须先读取仓库根目录 AGENTS.md，并继续读取 AGENTS.common.md 和 AGENTS.project.md；若任一文件无法读取，必须先说明缺失情况，不得直接设计或改代码。
 
 涉及 ChatGPT GitHub connector 远端提交、分支、PR、文件写入或版本同步时，必须先读取项目内 GitHub connector guide，按其中能力边界和操作流程执行，不得使用 update_ref 做分支状态探测。
 
