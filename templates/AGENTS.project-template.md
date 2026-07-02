@@ -1,18 +1,6 @@
-# AGENTS.md｜项目开发协作执行入口
+# AGENTS.project.md｜<project-name> 项目定制检查清单
 
-本文件是本项目进行需求设计、代码修改、UI 调整、PR 验收和人工开发时的最高优先级执行入口。所有执行者必须先读取并按检查项执行；无法读取时必须暂停并要求用户提供本文件内容。
-
----
-
-# A. 通用部分
-
-> 从 `ai-dev-governance-kit/AGENTS.base.md` 同步。同步时只更新 A 部分，不覆盖 B 项目定制部分。
-
-<!-- Paste AGENTS.base.md content here. -->
-
----
-
-# B. 项目定制部分
+本文件只承载本项目定制规则。每日治理同步任务不得自动覆盖本文件；只有用户在当前会话中明确授权时才可以修改。
 
 ## B0. 项目身份
 
@@ -37,15 +25,17 @@
 开始任何需求设计、代码修改、UI 调整或 PR 验收前，必须读取：
 
 - [ ] `AGENTS.md`
+- [ ] `AGENTS.common.md`
+- [ ] `AGENTS.project.md`
 - [ ] `README.md`
-- [ ] `docs/handoff/latest-handoff.md`
-- [ ] `docs/design/current-core-design.md`
-- [ ] `docs/requirements/current-requirements.md`
-- [ ] `docs/changes/CHANGELOG-dev.md`
+- [ ] `docs/handoff/latest-handoff.md`，如存在。
+- [ ] `docs/design/current-core-design.md`，如存在。
+- [ ] `docs/requirements/current-requirements.md`，如存在。
+- [ ] `docs/changes/CHANGELOG-dev.md`，如存在。
 
 按任务类型追加读取：
 
-- [ ] 涉及 ChatGPT GitHub connector 操作时，已读取项目内 connector guide。
+- [ ] 涉及 ChatGPT GitHub connector 操作时，已读取项目内 connector guide 和 feedback loop。
 - [ ] 涉及版本时，已读取所有项目版本文件。
 - [ ] 涉及依赖时，已读取 package / lock / dependency manifest。
 - [ ] 涉及后端、数据库、ETL、UI、构建或发布时，已读取对应模块文件。
@@ -63,9 +53,10 @@
 - [ ] 当前版本已确认：`<version>`。
 - [ ] 项目真实版本文件已同步：`<version-files>`。
 - [ ] README 当前版本已同步。
-- [ ] handoff 当前版本已同步。
-- [ ] changelog 当前版本已同步。
+- [ ] handoff 当前版本已同步，如存在。
+- [ ] changelog 当前版本已同步，如存在。
 - [ ] 不改依赖时，未修改 lock 文件。
+- [ ] 版本体系未确认时，未强行新增版本机制。
 
 ## B5. 本项目构建与 CI 检查
 
@@ -99,7 +90,7 @@
 
 ## B8. ChatGPT GitHub Connector 操作检查
 
-- [ ] 已读取项目内 connector guide。
+- [ ] 已读取项目内 connector guide 和 feedback loop。
 - [ ] 使用 `compare_commits` 检查分支差异，未用 `update_ref` 做探测。
 - [ ] 使用 `fetch_file` 获取文件内容和 sha。
 - [ ] 使用 `update_file` 更新已有 UTF-8 文本文件。
@@ -107,4 +98,4 @@
 - [ ] 每次写入后已回读关键文件确认。
 - [ ] 遇到 safety block、not fast-forward、sha 冲突时，已停止说明或重新读取后再判断，未盲目重试。
 - [ ] 操作结束前已复盘是否出现新的 connector 问题或更优流程。
-- [ ] 如出现新经验，已更新项目内 guide 或补充记录文件。
+- [ ] 如出现新经验，已更新项目内 guide、feedback loop 或公共治理仓。
