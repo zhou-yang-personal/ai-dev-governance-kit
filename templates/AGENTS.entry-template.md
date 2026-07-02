@@ -15,7 +15,6 @@ AGENTS.project.md
 
 ```text
 docs/development/chatgpt-github-connector-guide.md
-docs/development/chatgpt-github-connector-feedback-loop.md
 ```
 
 ## 2. 文件职责
@@ -39,7 +38,6 @@ AGENTS.md          # 固定入口，只负责引导读取和声明优先级
 ```text
 AGENTS.common.md
 docs/development/chatgpt-github-connector-guide.md
-docs/development/chatgpt-github-connector-feedback-loop.md
 .github/pull_request_template.md
 ```
 
@@ -62,4 +60,4 @@ AGENTS.project.md
 - 涉及版本号时必须按 `AGENTS.project.md` 的项目版本规则同步。
 - 不改依赖时不得修改 lock 文件。
 - 不得虚构 build / test / CI 通过。
-- GitHub connector 操作结束前，必须检查是否出现新问题或更优流程；如有，更新 connector guide 或 feedback loop。
+- GitHub connector 操作结束前，必须检查是否出现新问题或更优流程；如有，更新 connector guide 或公共治理仓。
