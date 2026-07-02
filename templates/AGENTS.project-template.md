@@ -35,7 +35,7 @@
 
 按任务类型追加读取：
 
-- [ ] 涉及 ChatGPT GitHub connector 操作时，已读取项目内 connector guide 和 feedback loop。
+- [ ] 涉及 ChatGPT GitHub connector 操作时，已读取项目内 connector guide。
 - [ ] 涉及版本时，已读取所有项目版本文件。
 - [ ] 涉及依赖时，已读取 package / lock / dependency manifest。
 - [ ] 涉及后端、数据库、ETL、UI、构建或发布时，已读取对应模块文件。
@@ -90,7 +90,7 @@
 
 ## B8. ChatGPT GitHub Connector 操作检查
 
-- [ ] 已读取项目内 connector guide 和 feedback loop。
+- [ ] 已读取项目内 connector guide。
 - [ ] 使用 `compare_commits` 检查分支差异，未用 `update_ref` 做探测。
 - [ ] 使用 `fetch_file` 获取文件内容和 sha。
 - [ ] 使用 `update_file` 更新已有 UTF-8 文本文件。
@@ -98,4 +98,4 @@
 - [ ] 每次写入后已回读关键文件确认。
 - [ ] 遇到 safety block、not fast-forward、sha 冲突时，已停止说明或重新读取后再判断，未盲目重试。
 - [ ] 操作结束前已复盘是否出现新的 connector 问题或更优流程。
-- [ ] 如出现新经验，已更新项目内 guide、feedback loop 或公共治理仓。
+- [ ] 如出现新经验，已更新项目内 connector guide 或公共治理仓。
