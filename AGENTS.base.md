@@ -45,7 +45,7 @@
 - [ ] 已读取 handoff / design / requirements / changelog；文件不存在时已标注“未发现”。
 - [ ] 已读取 PR 模板、CI 配置和构建配置；文件不存在时已标注“未发现”。
 - [ ] 已读取本次任务直接相关源码、配置、脚本或文档。
-- [ ] 涉及 GitHub connector 操作时，已读取项目内 connector guide 和 feedback loop。
+- [ ] 涉及 GitHub connector 操作时，已读取项目内 connector guide。
 - [ ] 文件缺失时，已标注“未发现 / 未确认”，未伪造读取结果。
 
 ## A5. 方向一致性
@@ -100,4 +100,4 @@
 - [ ] 已说明验证方法、验证结果、未验证项和风险边界。
 - [ ] 已说明是否修改版本号、依赖和 lock 文件。
 - [ ] 已提供分支、commit、PR 或下载链接等交付入口。
-- [ ] 如涉及 GitHub connector 操作，已检查是否出现新问题或更优流程；如有，已更新项目内 guide、feedback loop 或公共治理仓。
+- [ ] 如涉及 GitHub connector 操作，已检查是否出现新问题或更优流程；如有，已更新项目内 connector guide 或公共治理仓。
