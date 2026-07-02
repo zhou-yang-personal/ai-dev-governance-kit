@@ -49,7 +49,6 @@ AGENTS.project.md         # 公共仓自身项目规则
 └─ prompts/
    ├─ daily-governance-sync.prompt.md
    ├─ initialize-project-governance.prompt.md
-   ├─ new-chat-handoff.prompt.md
    └─ codex-task-prompt.template.md
 ```
 
@@ -68,7 +67,6 @@ AGENTS.project.md         # 公共仓自身项目规则
 | `templates/latest-handoff.template.md` | handoff 初始化模板 | 可选维护 |
 | `prompts/daily-governance-sync.prompt.md` | 每日治理同步任务 prompt | 是 |
 | `prompts/initialize-project-governance.prompt.md` | 新项目治理初始化 prompt | 是 |
-| `prompts/new-chat-handoff.prompt.md` | 新会话启动模板 | 可选维护 |
 | `prompts/codex-task-prompt.template.md` | Codex 单任务启动模板 | 可选维护 |
 
 ## 5. 同步范围
