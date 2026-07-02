@@ -16,7 +16,6 @@ README.md
 
 ```text
 guides/chatgpt-github-connector-guide.md
-guides/chatgpt-github-connector-feedback-loop.md
 ```
 
 ## 2. 文件职责
