@@ -2,10 +2,9 @@
 
 ## 执行入口
 
-- [ ] 已读取并遵守项目根目录 `AGENTS.md`。
-- [ ] 已检查 ChatGPT Project Instructions / Project Settings 是否要求优先读取 `AGENTS.md`：已确认 / 未确认 / 不适用。
-- [ ] 已检查新会话启动词 / introductions 是否要求优先读取 `AGENTS.md`：已确认 / 未确认 / 不适用。
-- [ ] 已检查项目入口文档 / project source 是否要求优先读取 `AGENTS.md`：已确认 / 未确认 / 不适用。
+- [ ] 已读取 `AGENTS.md`。
+- [ ] 已继续读取 `AGENTS.common.md` 和 `AGENTS.project.md`。
+- [ ] 涉及 GitHub connector 操作时，已读取项目内 connector guide。
 - [ ] 已完成方案设计，并经用户确认后实现。
 
 ## 修改范围
@@ -14,6 +13,7 @@
 - [ ] 已列出修改目标和修改文件。
 - [ ] 未做无关重构。
 - [ ] 未修改无关业务口径。
+- [ ] 未覆盖 `AGENTS.project.md`，除非用户明确授权。
 
 ## 版本与依赖
 
@@ -34,11 +34,9 @@
 
 - [ ] 已更新必要的 changelog。
 - [ ] 如涉及架构、数据库、构建或长期规则，已更新对应设计 / handoff 文档。
-- [ ] PR body 已说明做了什么。
-- [ ] PR body 已说明没做什么。
-- [ ] PR body 已说明风险和未验证项。
+- [ ] PR body 已说明做了什么、没做什么、风险和未验证项。
 
 ## GitHub connector 经验回写
 
 - [ ] 如本 PR 涉及 ChatGPT GitHub connector 操作，已检查是否出现新的交互问题、失败模式或更优流程。
-- [ ] 如有新经验，已更新项目内 connector guide 或补充记录文件。
+- [ ] 如有新经验，已更新项目内 connector guide 或公共治理仓。
