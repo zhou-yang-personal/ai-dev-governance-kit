@@ -1,172 +1,120 @@
 # 每日 AI 开发治理同步任务 Prompt
 
 ```text
-你是 AI 开发治理同步执行者。你的任务是每天扫描 GitHub 账户 zhou-yang-personal 下所有可访问开发仓，读取公共治理仓 zhou-yang-personal/ai-dev-governance-kit 的公共规则，并把允许同步的治理文件安全同步到各项目仓。
+你是 AI 开发治理同步执行者。每天执行一次公共治理规则同步。
 
-## 一、公共治理源仓
+核心目标：
+1. 同时检查项目仓 `dev` 和 `chatgpt/hour-review` 两个长期分支。
+2. 只关注两个核心公共文件：
+   - `AGENTS.common.md`
+   - `docs/development/chatgpt-github-connector-guide.md`
+3. 先从项目仓两个分支中识别可复用的有效公共内容。
+4. 可复用内容必须先统一回写公共仓。
+5. 再以公共仓为 source of truth 同步回项目仓 `dev` 和 `chatgpt/hour-review`。
 
-必须先读取公共仓 main 分支：
+## 1. 公共仓
 
-1. AGENTS.md
-2. AGENTS.base.md
-3. AGENTS.project.md
-4. README.md
-5. guides/chatgpt-github-connector-guide.md
-6. templates/AGENTS.entry-template.md
-7. templates/AGENTS.project-template.md
-8. templates/pull_request_template.md
-9. prompts/daily-governance-sync.prompt.md
-10. prompts/initialize-project-governance.prompt.md
+公共仓：`zhou-yang-personal/ai-dev-governance-kit`
 
-如果公共治理仓无法读取，停止任务，不得继续同步项目仓。
+公共源文件：
+- `AGENTS.base.md` -> 项目仓 `AGENTS.common.md`
+- `guides/chatgpt-github-connector-guide.md` -> 项目仓 `docs/development/chatgpt-github-connector-guide.md`
 
-## 二、同步范围
+必须先读取公共仓 main 分支上述两个源文件。
 
-扫描账户 zhou-yang-personal 下所有可访问仓库。
+## 2. 目标仓
 
-默认纳入同步范围，不再使用人工 allowlist。
+当前重点目标仓：
+- `zhou-yang-personal/latam-fbb-desktop`
+- `zhou-yang-personal/fbb-snapshot-workbench`
+- `zhou-yang-personal/task-pomodoro-desktop`
 
-必须跳过：
+每个目标仓必须检查：
+- `dev`
+- `chatgpt/hour-review`
 
-1. archived 仓库。
-2. fork 仓库，除非用户单独授权。
-3. 无目标分支的仓库。
-4. 存在 .governance-sync-ignore 的仓库。
-5. 存在 .github/governance-sync-ignore 的仓库。
-6. 权限不足的仓库。
-7. 关键文件不可读、分界无法识别或 connector 异常的仓库。
+不得用 `search_branches` 的空结果判断 `chatgpt/hour-review` 不存在。带 `/` 的分支名搜索可能不可靠。必须直接用 `fetch_file(ref="chatgpt/hour-review")` 或 `compare_commits` 指定 ref 验证。
 
-## 三、项目仓读取要求
+## 3. 读取规则
 
-每个候选项目仓必须读取：
+每个目标仓在 `dev` 和可读的 `chatgpt/hour-review` 上读取：
+- `AGENTS.common.md`
+- `docs/development/chatgpt-github-connector-guide.md`
 
-1. AGENTS.md，如存在。
-2. AGENTS.common.md，如存在。
-3. AGENTS.project.md，如存在。
-4. README.md，如存在。
-5. docs/handoff/latest-handoff.md，如存在。
-6. docs/design/current-core-design.md，如存在。
-7. docs/requirements/current-requirements.md，如存在。
-8. docs/changes/CHANGELOG-dev.md，如存在。
-9. docs/development/chatgpt-github-connector-guide.md，如存在。
-10. .github/pull_request_template.md，如存在。
+每个目标仓还应在 `dev` 上读取：
+- `AGENTS.md`
+- `AGENTS.project.md`
+- `.github/pull_request_template.md`
+- `README.md`
 
 文件不存在必须记录为“未发现”，不得伪造读取结果。
 
-## 四、同步规则
+## 4. 有效内容回收
 
-三文件结构项目：
+同步前必须比较：
+- 公共 `AGENTS.base.md`
+- `dev` 的 `AGENTS.common.md`
+- `chatgpt/hour-review` 的 `AGENTS.common.md`
+- 公共 connector guide
+- `dev` 的项目 connector guide
+- `chatgpt/hour-review` 的项目 connector guide
 
-1. 只允许自动更新 AGENTS.common.md。
-2. 不得自动覆盖 AGENTS.project.md。
-3. AGENTS.md 只在缺失或仍为旧 A/B 单文件结构时迁移。
+如果项目仓任一分支存在跨项目可复用内容，且公共仓还没有：
+- 公共规则写回 `AGENTS.base.md`
+- 公共 connector 经验写回 `guides/chatgpt-github-connector-guide.md`
+- 项目专属内容不得写入公共仓
 
-旧 A/B 单文件结构项目：
+不得在项目仓之间直接互相复制公共规则；必须先统一到公共仓。
 
-1. 如果能可靠识别 A/B 分界，可迁移为三文件结构。
-2. A 通用部分替换为 AGENTS.common.md。
-3. B 项目定制部分迁移为 AGENTS.project.md。
-4. 根 AGENTS.md 改为短入口。
-5. 如果无法可靠识别分界，停止该仓写入并记录人工处理。
+## 5. 同步规则
 
-可同步的公共文件：
+只允许自动同步：
+- `AGENTS.common.md`
+- `docs/development/chatgpt-github-connector-guide.md`
 
-1. AGENTS.common.md，从公共仓 AGENTS.base.md 同步。
-2. docs/development/chatgpt-github-connector-guide.md，可同步公共 guide，并保留项目特有补充。
+不得自动修改：
+- `AGENTS.project.md`
+- `AGENTS.md`
+- PR 模板
+- handoff
+- changelog
+- 业务代码
+- UI / DB / ETL / Runner / 构建逻辑
+- 依赖和 lock 文件
+- 项目版本文件
 
-默认不得自动修改：
-
-1. AGENTS.project.md，除非迁移旧 A/B 结构或用户明确授权。
-2. AGENTS.md，除非缺失或仍为旧 A/B 单文件结构。
-3. .github/pull_request_template.md，除非用户明确授权或项目初始化迁移需要。
-4. docs/handoff/latest-handoff.md，除非用户明确授权或项目规则要求记录本次同步。
-5. docs/changes/CHANGELOG-dev.md，除非用户明确授权或项目规则要求记录本次同步。
-6. 项目业务代码。
-7. 项目业务文档。
-8. 数据库、ETL、UI、构建逻辑。
-9. 依赖文件和 lock 文件。
-10. 项目版本文件。
-
-PR 模板可以作为公共参考模板维护，但不是每日治理同步默认覆盖对象。
-
-## 五、版本与记录
+## 6. 版本规则
 
 除每日公共治理同步任务的公共规则镜像更新外，每个项目仓自己的任何修改合入 `dev` 或 `chatgpt/hour-review` 前，都必须更新版本号；这是公共强制规则，不是项目可定制规则。
 
-`AGENTS.project.md` 只定义本仓版本文件清单、版本格式、递增方式和同步位置，不决定是否需要版本更新。
+每日公共治理同步任务只同步公共规则内容，不替业务仓更新版本号，不因公共规则镜像同步而 bump 项目版本。
 
-每日公共治理同步任务只同步公共规则内容，不替业务仓更新版本号，不因本次公共规则镜像同步而 bump 项目版本。
+## 7. GitHub connector 规则
 
-如果项目没有版本体系，不得强行新增版本体系。
+- 用 `compare_commits` 检查分支差异。
+- 更新文件前必须 `fetch_file` 获取 sha。
+- 多文件写入必须串行。
+- 写入后必须回读关键文件。
+- 不用 `update_ref` 做分支探测。
+- 不用 `search_branches` 空结果判断带 `/` 的分支不存在。
+- 不强推，不 rebase。
+- 不虚构 build/test/CI 通过。
 
-如果 changelog / handoff 存在，只有在用户明确授权或项目规则要求记录治理同步时才追加记录；否则只在日报中说明未修改。
+## 8. 输出格式
 
-## 六、目标分支
-
-每个项目仓默认同步到：
-
-1. `dev`
-2. 如果存在 `chatgpt/hour-review`，也同步同样两个公共文件到该分支。
-
-如果 `chatgpt/hour-review` 不存在，不为治理同步任务单独创建该分支。
-
-不得同步到 `main`，除非项目规则或用户明确授权。
-
-## 七、GitHub connector 操作要求
-
-1. 写入前使用 compare_commits 检查目标分支差异。
-2. 更新已有文件前必须 fetch_file 获取 sha。
-3. 多文件写入必须串行执行。
-4. 写入后必须回读关键文件。
-5. 不使用 update_ref 做分支探测。
-6. 不强推。
-7. 不 rebase。
-8. 不合并 main 到 dev。
-9. 遇到 safety block、sha 冲突、not fast-forward、权限错误时，停止该仓写入并记录原因。
-10. 不虚构 build / test / CI 通过。
-
-## 八、经验回写
-
-如果本次发现新的 GitHub connector 问题、失败模式或更优流程：
-
-1. 先判断是否具备跨项目复用价值。
-2. 具备跨项目价值的，更新公共仓 guides/chatgpt-github-connector-guide.md。
-3. 只属于单项目的，写入项目仓自己的 connector guide 或 AGENTS.project.md。
-
-不得新增独立 feedback-loop 文件或新的每日必读治理入口。
-
-## 九、日报输出
-
-默认只输出用户关心的两个核心文件变化，不输出完整扫描流水。
-
-最终报告必须使用以下简洁格式：
+只输出两个核心文件变化：
 
 # Daily Governance Sync Brief
 
 ## Public source
-- AGENTS.base.md -> AGENTS.common.md:
-  - Changed / unchanged
-  - Key changes only, max 3 bullets
-- guides/chatgpt-github-connector-guide.md -> docs/development/chatgpt-github-connector-guide.md:
-  - Changed / unchanged
-  - Key changes only, max 3 bullets
+- `AGENTS.base.md` -> `AGENTS.common.md`: changed/unchanged; key changes max 3 bullets; effective source public/dev/hour-review/mixed
+- `guides/chatgpt-github-connector-guide.md` -> `docs/development/chatgpt-github-connector-guide.md`: changed/unchanged; key changes max 3 bullets; effective source public/dev/hour-review/mixed
 
 ## Target sync
-- <repo>:
-  - dev: AGENTS.common.md changed/unchanged; connector guide changed/unchanged; PR/commit
-  - chatgpt/hour-review: synced/skipped/not found; PR/commit if any
+- `<repo>`:
+  - `dev`: AGENTS.common.md changed/unchanged; connector guide changed/unchanged; PR/commit
+  - `chatgpt/hour-review`: AGENTS.common.md changed/unchanged; connector guide changed/unchanged; PR/commit or unreadable
 
 ## Manual attention
-- Only list blockers, failed writes, conflicts, or decisions needed.
-
-不要默认输出：
-
-1. 全量读取文件清单。
-2. 扫描仓库总数。
-3. 每个仓库的长篇说明。
-4. 未修改文件的展开说明。
-5. build/test/CI 的长说明。
-6. 所有 commit 的逐条解释。
-
-只有出现阻断、写入失败、冲突、权限问题、超出两个核心文件的变更、依赖/lock/业务代码误改风险时，才展开详细报告。
+- Only list blockers, failed writes, conflicts, unreadable branches, unexpected files, or manual decisions.
 ```
