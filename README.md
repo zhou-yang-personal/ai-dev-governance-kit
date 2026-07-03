@@ -62,7 +62,7 @@ AGENTS.project.md         # 公共仓自身项目规则
 | `guides/chatgpt-github-connector-guide.md` | GitHub connector 操作手册和经验回写机制 | 是 |
 | `templates/AGENTS.entry-template.md` | 项目根入口模板 | 是 |
 | `templates/AGENTS.project-template.md` | 项目定制规则模板 | 是 |
-| `templates/pull_request_template.md` | PR 检查模板 | 是，但不强制覆盖项目特有模板 |
+| `templates/pull_request_template.md` | PR 检查模板 | 是，但不作为每日治理同步的默认自动覆盖对象 |
 | `templates/CHANGELOG-dev.template.md` | changelog 初始化模板 | 可选维护 |
 | `templates/latest-handoff.template.md` | handoff 初始化模板 | 可选维护 |
 | `prompts/daily-governance-sync.prompt.md` | 每日治理同步任务 prompt | 是 |
@@ -87,23 +87,28 @@ fork 仓库，除非用户单独授权
 
 ## 6. 每日同步边界
 
-默认允许同步：
+默认允许自动同步：
 
 ```text
 AGENTS.common.md
 docs/development/chatgpt-github-connector-guide.md
-.github/pull_request_template.md
 ```
 
 默认不得自动覆盖：
 
 ```text
 AGENTS.project.md
+AGENTS.md
+.github/pull_request_template.md
+项目 handoff
+项目 changelog
 项目业务代码
 项目业务文档
 数据库 / ETL / UI / 构建逻辑
 依赖文件和 lock 文件
 ```
+
+PR 模板可以作为公共参考模板长期维护，但不再作为每日治理同步的默认写入对象。只有用户明确授权或项目初始化迁移需要时，才允许单独处理。
 
 ## 7. 使用原则
 

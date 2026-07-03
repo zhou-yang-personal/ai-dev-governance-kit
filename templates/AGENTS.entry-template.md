@@ -38,13 +38,16 @@ AGENTS.md          # 固定入口，只负责引导读取和声明优先级
 ```text
 AGENTS.common.md
 docs/development/chatgpt-github-connector-guide.md
-.github/pull_request_template.md
 ```
 
 每日治理同步任务不得自动覆盖：
 
 ```text
 AGENTS.project.md
+AGENTS.md
+.github/pull_request_template.md
+项目 handoff
+项目 changelog
 项目业务代码
 项目业务文档
 数据库 / ETL / UI / 构建逻辑

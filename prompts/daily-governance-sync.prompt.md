@@ -73,23 +73,28 @@
 
 1. AGENTS.common.md，从公共仓 AGENTS.base.md 同步。
 2. docs/development/chatgpt-github-connector-guide.md，可同步公共 guide，并保留项目特有补充。
-3. .github/pull_request_template.md，可补齐通用检查项，但不得删除项目特有检查项。
 
 默认不得自动修改：
 
 1. AGENTS.project.md，除非迁移旧 A/B 结构或用户明确授权。
-2. 项目业务代码。
-3. 项目业务文档。
-4. 数据库、ETL、UI、构建逻辑。
-5. 依赖文件和 lock 文件。
+2. AGENTS.md，除非缺失或仍为旧 A/B 单文件结构。
+3. .github/pull_request_template.md，除非用户明确授权或项目初始化迁移需要。
+4. docs/handoff/latest-handoff.md，除非用户明确授权或项目规则要求记录本次同步。
+5. docs/changes/CHANGELOG-dev.md，除非用户明确授权或项目规则要求记录本次同步。
+6. 项目业务代码。
+7. 项目业务文档。
+8. 数据库、ETL、UI、构建逻辑。
+9. 依赖文件和 lock 文件。
+
+PR 模板可以作为公共参考模板维护，但不是每日治理同步默认覆盖对象。
 
 ## 五、版本与记录
 
-如果实际修改项目仓治理文件，且项目已有版本体系，应按项目 AGENTS.project.md 的规则 bump 一个小版本。
+如果实际修改项目仓治理文件，且项目已有版本体系，应按项目 AGENTS.project.md 的规则判断是否需要 bump 小版本。
 
 如果项目没有版本体系，不得强行新增版本体系。
 
-如果 changelog / handoff 存在，追加本次治理同步记录；如果不存在，不强制创建，除非项目规则要求。
+如果 changelog / handoff 存在，只有在用户明确授权或项目规则要求记录治理同步时才追加记录；否则只在日报中说明未修改。
 
 ## 六、GitHub connector 操作要求
 
@@ -111,6 +116,8 @@
 1. 先判断是否具备跨项目复用价值。
 2. 具备跨项目价值的，更新公共仓 guides/chatgpt-github-connector-guide.md。
 3. 只属于单项目的，写入项目仓自己的 connector guide 或 AGENTS.project.md。
+
+不得新增独立 feedback-loop 文件或新的每日必读治理入口。
 
 ## 八、日报输出
 

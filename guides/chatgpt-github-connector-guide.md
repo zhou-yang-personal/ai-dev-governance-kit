@@ -2,6 +2,10 @@
 
 本文件记录 ChatGPT 使用 GitHub connector 处理远端仓库文件、分支、提交和 PR 的能力边界、推荐流程、失败处理和经验回写机制。涉及 GitHub 远端提交、分支、PR、文件写入或版本同步时，应先读取本文件。
 
+本文件是公共源文件。项目仓可同步为 `docs/development/chatgpt-github-connector-guide.md`，并在本地保留项目特有补充。
+
+本文件说明 connector 可如何操作 PR 模板、版本文件等文本文件，不代表公共仓必须把 PR 模板作为每日治理同步的默认写入对象。
+
 ## 1. 适用范围
 
 - 适用于 ChatGPT 通过 GitHub connector 直接读取或修改 GitHub 仓库的任务。
@@ -53,8 +57,9 @@
 | Markdown | `fetch_file` + `update_file` / `create_file` | 适合 connector 直接操作；长文改动优先小步提交 |
 | TypeScript / TSX | `fetch_file` + `update_file` | 修改后提示运行前端构建 |
 | Rust / TOML | `fetch_file` + `update_file` | 修改后提示运行 Rust 检查 |
+| Python | `fetch_file` + `update_file` | 修改后提示运行 py_compile / compileall |
 | JSON 配置 | 优先最小修改 | 整文件写入可能触发平台拦截；失败后停止说明，不盲试 |
-| PR 模板 | `create_file` / `update_file` | 只放确认清单，不复制 AGENTS 全文 |
+| PR 模板 | `create_file` / `update_file` | 只放确认清单，不复制 AGENTS 全文；不是每日治理同步默认写入对象 |
 | lock 文件 | 默认不改 | 只有新增、删除、升级依赖时才改 |
 | 大文件 | 优先交给 Codex / 本地 | connector 不适合反复整文件重写 |
 | 二进制、图片、DB、安装包、构建产物 | 默认不通过 connector 操作 | 不提交运行数据和构建产物 |
@@ -82,6 +87,8 @@
 - 本次是否发现更优的读取、比较、写入、回读、交付流程。
 
 如新经验具备跨项目复用价值，优先回写本文件；如只属于某个项目，写入项目仓自己的 connector guide 或 `AGENTS.project.md`。
+
+不得新增独立 `feedback-loop` 文件或新的每日必读治理入口。
 
 ## 7. 已知踩坑记录
 
