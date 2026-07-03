@@ -35,20 +35,22 @@
 不适合作为常规手段的能力：
 
 - `update_ref`：只用于明确移动分支指针；不得用于分支状态探测、noop 检查或试错。
+- `search_branches`：只可作为辅助搜索；不得用其空结果判断带 `/` 的分支不存在。
 - `create_blob` / `create_tree` / `create_commit`：仅在需要组合多文件 commit 且已有完整 tree / parent 信息时使用；常规修改优先用 `create_file` / `update_file`。
 
 ## 3. 推荐流程
 
 1. 用 `get_repo` 确认仓库、默认分支、权限和 archived / fork 状态。
 2. 用 `compare_commits` 检查目标分支差异。
-3. 用 `fetch_file` 读取 `AGENTS.md`、`AGENTS.common.md`、`AGENTS.project.md`、README、handoff、设计文档、目标文件和 sha。
-4. 更新已有文本文件：先 `fetch_file` 获取 sha，再 `update_file`。
-5. 新增小文本文件：使用 `create_file`。
-6. 删除文件：先确认文件职责和当前 sha，再用 `delete_file`。
-7. 每次写入后，必须 `fetch_file` 回读关键片段。
-8. 多文件修改必须串行执行，不并发写同一路径。
-9. sha 冲突时，重新 `fetch_file` 获取最新内容，重新判断是否继续；不得盲目覆盖。
-10. 创建 PR 后，不自动 merge，除非用户明确要求。
+3. 如需判断带 `/` 的分支是否存在，优先直接用 `fetch_file(ref=<branch>)` 或 `compare_commits` 指定 ref 验证，不依赖 `search_branches` 空结果。
+4. 用 `fetch_file` 读取 `AGENTS.md`、`AGENTS.common.md`、`AGENTS.project.md`、README、handoff、设计文档、目标文件和 sha。
+5. 更新已有文本文件：先 `fetch_file` 获取 sha，再 `update_file`。
+6. 新增小文本文件：使用 `create_file`。
+7. 删除文件：先确认文件职责和当前 sha，再用 `delete_file`。
+8. 每次写入后，必须 `fetch_file` 回读关键片段。
+9. 多文件修改必须串行执行，不并发写同一路径。
+10. sha 冲突时，重新 `fetch_file` 获取最新内容，重新判断是否继续；不得盲目覆盖。
+11. 创建 PR 后，不自动 merge，除非用户明确要求。
 
 ## 4. 文件类型规则
 
@@ -72,6 +74,7 @@
 | `create_file` 提示文件已存在 | 改用 `fetch_file` + `update_file` |
 | `update_file` sha 冲突 | 重新读取文件和 sha 后再判断 |
 | `update_ref` 返回 not fast-forward | 不 force；除非用户明确要求且已说明风险 |
+| `search_branches` 对带 `/` 的分支返回空 | 不据此判断分支不存在；直接用 `fetch_file(ref=<branch>)` 或 `compare_commits` 指定 ref 验证 |
 | 平台 safety block | 停止说明被拦截的文件和操作类型；不得多轮盲试 |
 | 构建命令无法执行 | 明确写 `not run in ChatGPT GitHub connector environment` |
 | CI 未配置或无法读取 | 不声称 CI 通过 |
@@ -98,6 +101,7 @@
 - 2026-07-02：GitHub connector 不能运行本地构建命令；交付时必须如实标注未执行。
 - 2026-07-02：治理长文整文件更新可能被平台拦截；遇到拦截后应停止盲试，改用更小补充文件、人工补丁、Codex 或本地编辑。
 - 2026-07-02：公共规则应集中在少数源文件中；反馈机制不宜拆成多个每日必读文件，避免执行入口膨胀。
+- 2026-07-03：`search_branches` 对 `chatgpt/hour-review` 这类带 `/` 的分支名可能返回空；必须直接用 ref 读取或比较验证分支是否存在。
 
 ## 8. 交付前自检
 
@@ -105,6 +109,7 @@
 - [ ] 已按项目入口继续读取 `AGENTS.common.md` 和 `AGENTS.project.md`。
 - [ ] 已读取本文件或项目内副本。
 - [ ] 已用 `compare_commits` 检查分支差异，未用 `update_ref` 做探测。
+- [ ] 如涉及带 `/` 的分支名，未用 `search_branches` 空结果判断分支不存在。
 - [ ] 已用 `fetch_file` 获取待更新文件和 sha。
 - [ ] 已用 `update_file` 更新已有 UTF-8 文本文件，或用 `create_file` 新增小文本文件。
 - [ ] 已逐个回读关键文件确认。
