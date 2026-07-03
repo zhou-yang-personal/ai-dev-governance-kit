@@ -5,12 +5,11 @@
 
 核心目标：
 1. 同时检查项目仓 `dev` 和 `chatgpt/hour-review` 两个长期分支。
-2. 只关注两个核心公共文件：
-   - `AGENTS.common.md`
-   - `docs/development/chatgpt-github-connector-guide.md`
-3. 先从项目仓两个分支中识别可复用的有效公共内容。
+2. 读取/分析范围要覆盖公共治理相关配置，不只看两个核心文件。
+3. 从公共配置中识别可复用、跨项目适用、适合沉淀到 base 的规则。
 4. 可复用内容必须先统一回写公共仓。
 5. 再以公共仓为 source of truth 同步回项目仓 `dev` 和 `chatgpt/hour-review`。
+6. 写入/同步范围默认仍主要限制在两个核心公共文件。
 
 ## 1. 公共仓
 
@@ -20,7 +19,17 @@
 - `AGENTS.base.md` -> 项目仓 `AGENTS.common.md`
 - `guides/chatgpt-github-connector-guide.md` -> 项目仓 `docs/development/chatgpt-github-connector-guide.md`
 
-必须先读取公共仓 main 分支上述两个源文件。
+必须先读取公共仓 main 分支公共治理文件：
+- `AGENTS.md`
+- `AGENTS.base.md`
+- `AGENTS.project.md`
+- `README.md`
+- `guides/chatgpt-github-connector-guide.md`
+- `templates/AGENTS.entry-template.md`
+- `templates/AGENTS.project-template.md`
+- `templates/pull_request_template.md`
+- `prompts/daily-governance-sync.prompt.md`
+- `prompts/initialize-project-governance.prompt.md`
 
 ## 2. 目标仓
 
@@ -35,49 +44,53 @@
 
 不得用 `search_branches` 的空结果判断 `chatgpt/hour-review` 不存在。带 `/` 的分支名搜索可能不可靠。必须直接用 `fetch_file(ref="chatgpt/hour-review")` 或 `compare_commits` 指定 ref 验证。
 
-## 3. 读取规则
+## 3. 读取/分析范围
 
-每个目标仓在 `dev` 和可读的 `chatgpt/hour-review` 上读取：
-- `AGENTS.common.md`
-- `docs/development/chatgpt-github-connector-guide.md`
-
-每个目标仓还应在 `dev` 上读取：
+读取/分析范围大于写入范围。每个目标仓在 `dev` 和可读的 `chatgpt/hour-review` 上尽量读取这些公共治理相关配置：
 - `AGENTS.md`
+- `AGENTS.common.md`
 - `AGENTS.project.md`
+- `docs/development/chatgpt-github-connector-guide.md`
 - `.github/pull_request_template.md`
+- `.github/workflows/build-check.yml`
 - `README.md`
+- `docs/handoff/latest-handoff.md`
+- `docs/changes/CHANGELOG-dev.md`
+- `docs/design/current-core-design.md`
+- `docs/requirements/current-requirements.md`
 
 文件不存在必须记录为“未发现”，不得伪造读取结果。
 
-## 4. 有效内容回收
+## 4. 公共规则提取判断
 
-同步前必须比较：
-- 公共 `AGENTS.base.md`
-- `dev` 的 `AGENTS.common.md`
-- `chatgpt/hour-review` 的 `AGENTS.common.md`
-- 公共 connector guide
-- `dev` 的项目 connector guide
-- `chatgpt/hour-review` 的项目 connector guide
+从上述读取范围中查找适合提取到公共 base 的内容。只有同时满足下列条件，才可提取为公共规则：
+- 跨项目可复用。
+- 不是单一项目业务规则、产品方向、UI 偏好或技术私有约束。
+- 能提高后续开发、PR、同步、版本、connector 操作的一致性和安全性。
+- 不会覆盖项目自己的 `AGENTS.project.md` 定制能力。
 
-如果项目仓任一分支存在跨项目可复用内容，且公共仓还没有：
-- 公共规则写回 `AGENTS.base.md`
-- 公共 connector 经验写回 `guides/chatgpt-github-connector-guide.md`
-- 项目专属内容不得写入公共仓
+提取位置：
+- 公共执行规则、版本规则、PR/交付检查规则 -> `AGENTS.base.md`
+- GitHub connector 操作经验、失败模式、分支/PR/文件写入流程 -> `guides/chatgpt-github-connector-guide.md`
 
+项目专属内容不得写入公共仓，只保留在项目仓本地补充区或 `AGENTS.project.md`。
 不得在项目仓之间直接互相复制公共规则；必须先统一到公共仓。
 
-## 5. 同步规则
+## 5. 同步/写入范围
 
-只允许自动同步：
-- `AGENTS.common.md`
-- `docs/development/chatgpt-github-connector-guide.md`
+默认只允许自动同步两个核心公共文件：
+- `AGENTS.common.md`，来源是公共仓 `AGENTS.base.md`
+- `docs/development/chatgpt-github-connector-guide.md`，来源是公共仓 `guides/chatgpt-github-connector-guide.md`，并保留项目特有补充区
 
-不得自动修改：
+默认不得自动修改：
 - `AGENTS.project.md`
 - `AGENTS.md`
 - PR 模板
 - handoff
 - changelog
+- README
+- 设计/需求文档
+- GitHub workflow
 - 业务代码
 - UI / DB / ETL / Runner / 构建逻辑
 - 依赖和 lock 文件
@@ -102,13 +115,16 @@
 
 ## 8. 输出格式
 
-只输出两个核心文件变化：
+只输出两个核心文件变化和必要的公共规则提取结论：
 
 # Daily Governance Sync Brief
 
 ## Public source
 - `AGENTS.base.md` -> `AGENTS.common.md`: changed/unchanged; key changes max 3 bullets; effective source public/dev/hour-review/mixed
 - `guides/chatgpt-github-connector-guide.md` -> `docs/development/chatgpt-github-connector-guide.md`: changed/unchanged; key changes max 3 bullets; effective source public/dev/hour-review/mixed
+
+## Extracted base candidates
+- Only list rules extracted or rejected as manual candidates; max 5 bullets.
 
 ## Target sync
 - `<repo>`:
