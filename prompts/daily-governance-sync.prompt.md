@@ -6,10 +6,11 @@
 核心目标：
 1. 同时检查项目仓 `dev` 和 `chatgpt/hour-review` 两个长期分支。
 2. 读取/分析范围要覆盖公共治理相关配置，不只看两个核心文件。
-3. 从公共配置中识别可复用、跨项目适用、适合沉淀到 base 的规则。
-4. 可复用内容必须先统一回写公共仓。
-5. 再以公共仓为 source of truth 同步回项目仓 `dev` 和 `chatgpt/hour-review`。
-6. 写入/同步范围默认仍主要限制在两个核心公共文件。
+3. 必须读取每个目标分支自己的 `AGENTS.md`，并继续读取其中声明的必读文件；例如 `docs/requirements/manual-feedback-p0.md`。
+4. 从公共配置和 `AGENTS.md` 声明的必读文件中识别可复用、跨项目适用、适合沉淀到 base 的规则。
+5. 可复用内容必须先统一回写公共仓。
+6. 再以公共仓为 source of truth 同步回项目仓 `dev` 和 `chatgpt/hour-review`。
+7. 写入/同步范围默认仍主要限制在两个核心公共文件。
 
 ## 1. 公共仓
 
@@ -59,18 +60,24 @@
 - `docs/design/current-core-design.md`
 - `docs/requirements/current-requirements.md`
 
+分支级入口规则：
+- 必须先读取该目标分支自己的 `AGENTS.md`，不得只读取 `dev` 的入口文件后套用到 `chatgpt/hour-review`。
+- 如果该分支 `AGENTS.md` 声明了“必须继续读取”的文件，也必须继续读取并纳入分析范围。
+- 典型例子：如果 `AGENTS.md` 要求读取 `docs/requirements/manual-feedback-p0.md`，则该文件必须读取；其中关于自动 Review / 手动反馈 / P0 优先级的通用执行规则，应纳入公共 base 候选判断。
+- 如果 `AGENTS.md` 声明的必读文件不存在，必须记录为“未发现 / 未确认”，不得静默跳过。
+
 文件不存在必须记录为“未发现”，不得伪造读取结果。
 
 ## 4. 公共规则提取判断
 
-从上述读取范围中查找适合提取到公共 base 的内容。只有同时满足下列条件，才可提取为公共规则：
+从上述读取范围和 `AGENTS.md` 声明的必读文件中查找适合提取到公共 base 的内容。只有同时满足下列条件，才可提取为公共规则：
 - 跨项目可复用。
 - 不是单一项目业务规则、产品方向、UI 偏好或技术私有约束。
-- 能提高后续开发、PR、同步、版本、connector 操作的一致性和安全性。
+- 能提高后续开发、PR、同步、版本、connector 操作、自动 Review 或用户反馈处理的一致性和安全性。
 - 不会覆盖项目自己的 `AGENTS.project.md` 定制能力。
 
 提取位置：
-- 公共执行规则、版本规则、PR/交付检查规则 -> `AGENTS.base.md`
+- 公共执行规则、版本规则、PR/交付检查规则、自动 Review 规则、手动反馈处理规则 -> `AGENTS.base.md`
 - GitHub connector 操作经验、失败模式、分支/PR/文件写入流程 -> `guides/chatgpt-github-connector-guide.md`
 
 项目专属内容不得写入公共仓，只保留在项目仓本地补充区或 `AGENTS.project.md`。
@@ -85,6 +92,7 @@
 默认不得自动修改：
 - `AGENTS.project.md`
 - `AGENTS.md`
+- `AGENTS.md` 声明的项目必读文件，例如 `docs/requirements/manual-feedback-p0.md`
 - PR 模板
 - handoff
 - changelog
@@ -132,5 +140,5 @@
   - `chatgpt/hour-review`: AGENTS.common.md changed/unchanged; connector guide changed/unchanged; PR/commit or unreadable
 
 ## Manual attention
-- Only list blockers, failed writes, conflicts, unreadable branches, unexpected files, or manual decisions.
+- Only list blockers, failed writes, conflicts, unreadable branches, unexpected files, missing AGENTS-declared files, or manual decisions.
 ```
