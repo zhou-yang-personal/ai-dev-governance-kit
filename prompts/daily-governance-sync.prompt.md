@@ -11,6 +11,7 @@
 5. 可复用内容必须先统一回写公共仓。
 6. 再以公共仓为 source of truth 同步回项目仓 `dev` 和 `chatgpt/hour-review`。
 7. 写入/同步范围默认仍主要限制在两个核心公共文件。
+8. 满足安全阈值时必须自动合入闭环，不得默认停留在 PR 等待人工合入。
 
 ## 1. 公共仓
 
@@ -121,7 +122,31 @@
 - 不强推，不 rebase。
 - 不虚构 build/test/CI 通过。
 
-## 8. 输出格式
+## 8. 闭环合入规则
+
+默认必须完成闭环合入，不能只创建 PR 后等待人工处理。只有不满足安全阈值时，才允许停留在 PR 并列入 Manual attention。
+
+自动合入必须同时满足以下条件：
+- PR 不是 draft。
+- PR 为 open 且 mergeable 为 true。
+- PR changed_files <= 2。
+- PR 变更文件只能是：`AGENTS.common.md`、`docs/development/chatgpt-github-connector-guide.md`。
+- 单个目标 PR 的 additions + deletions <= 200 行。
+- 没有修改 `AGENTS.md`、`AGENTS.project.md`、`docs/requirements/manual-feedback-p0.md`、业务代码、依赖、lock、版本文件、workflow、PR 模板、handoff、changelog。
+- 写入后已经回读关键文件。
+- 使用 `expected_head_sha` 合入，防止 head 漂移。
+
+满足上述条件时：
+- 创建 PR 后必须立即使用 `merge_pull_request` 合入目标分支。
+- 合入后必须回读 PR，确认 `state=closed` 且 `merged=true`。
+- 报告输出 PR 和 merge commit。
+
+不满足上述条件时：
+- 不得强行合入。
+- PR 保持 open。
+- 在 Manual attention 中说明具体未满足哪条安全阈值。
+
+## 9. 输出格式
 
 只输出两个核心文件变化和必要的公共规则提取结论：
 
@@ -136,9 +161,9 @@
 
 ## Target sync
 - `<repo>`:
-  - `dev`: AGENTS.common.md changed/unchanged; connector guide changed/unchanged; PR/commit
-  - `chatgpt/hour-review`: AGENTS.common.md changed/unchanged; connector guide changed/unchanged; PR/commit or unreadable
+  - `dev`: AGENTS.common.md changed/unchanged; connector guide changed/unchanged; PR/commit; merged/skipped with reason
+  - `chatgpt/hour-review`: AGENTS.common.md changed/unchanged; connector guide changed/unchanged; PR/commit or unreadable; merged/skipped with reason
 
 ## Manual attention
-- Only list blockers, failed writes, conflicts, unreadable branches, unexpected files, missing AGENTS-declared files, or manual decisions.
+- Only list blockers, failed writes, conflicts, unreadable branches, unexpected files, missing AGENTS-declared files, failed auto-merge thresholds, or manual decisions.
 ```
