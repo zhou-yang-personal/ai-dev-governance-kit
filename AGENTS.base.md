@@ -29,7 +29,10 @@
 - [ ] 已检查 `docs/design/current-core-design.md` 是否存在；不存在时已记录为可选待补齐。
 - [ ] 已检查 `docs/requirements/current-requirements.md` 是否存在；不存在时已记录为可选待补齐。
 - [ ] 已检查 `docs/changes/CHANGELOG-dev.md` 是否存在；不存在时已记录为可选待补齐。
-- [ ] 已检查 `docs/development/chatgpt-github-connector-guide.md` 是否存在；涉及 GitHub connector 操作而不存在时，应优先补齐。
+- [ ] 已检查项目内 `docs/development/chatgpt-github-connector-guide.md` 是否存在。
+- [ ] GitHub connector 操作手册的公共源文件已确认：`ai-dev-governance-kit/guides/chatgpt-github-connector-guide.md`。
+- [ ] 项目内 connector guide 是公共源文件的本地副本，可保留项目特有补充。
+- [ ] 涉及 GitHub connector 操作且项目内 connector guide 不存在时，应先读取公共源文件，并把项目内副本列为待补齐。
 - [ ] 已检查 `.github/pull_request_template.md` 是否存在；不存在时只记录，不强制创建。
 
 ## A3. 外部入口配置
@@ -55,7 +58,7 @@
 - [ ] 已读取 handoff / design / requirements / changelog；文件不存在时已标注“未发现”。
 - [ ] 已读取 PR 模板、CI 配置和构建配置；文件不存在时已标注“未发现”。
 - [ ] 已读取本次任务直接相关源码、配置、脚本或文档。
-- [ ] 涉及 GitHub connector 操作时，已读取项目内 connector guide。
+- [ ] 涉及 GitHub connector 操作时，已优先读取项目内 connector guide；如项目内尚未建立，已读取公共源文件 `ai-dev-governance-kit/guides/chatgpt-github-connector-guide.md`，并记录项目内副本待补齐。
 - [ ] 文件缺失时，已标注“未发现 / 未确认”，未伪造读取结果。
 
 ## A6. 方向一致性
@@ -82,7 +85,7 @@
 ## A8. PR
 
 - [ ] 已检查是否存在 PR 模板。
-- [ ] PR body 包含执行前检查、修改目标、修改内容、验证状态、版本号、做了什么、没做什么、风险。
+- [ ] 如创建 PR，PR body 包含执行前检查、修改目标、修改内容、验证状态、版本号、做了什么、没做什么、风险。
 - [ ] 未在用户未要求时自动合并 PR。
 - [ ] PR 目标分支符合项目规则。
 
